@@ -13,7 +13,6 @@ const EditorComponent = () => {
 
   const handleChange = (newValue: string | undefined) => {
     setValue(newValue);
-    console.log('newValue : ' , newValue);
   };
 
   return (

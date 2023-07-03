@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import HeaderComponent from '@/common/component/header'
 import { HEADER_HEIGHT } from '@/common/const'
 import FooterComponent from '@/common/component/footer'
+import RootProvider from './provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,9 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <HeaderComponent title='pentaclog'/>
-      <body style={{width:"100vw",height:"100vh", marginTop:HEADER_HEIGHT, background:"linear-gradient(black,gray)"}} className={inter.className}>{children}</body>
-      <FooterComponent/>
+      <body style={{ width: "100%", height: `calc(100vh - ${HEADER_HEIGHT})`, marginTop: HEADER_HEIGHT, background: "linear-gradient(black,gray)" }} className={inter.className}>
+        <RootProvider>
+          <HeaderComponent title='pentaclog' />
+          {children}
+          <FooterComponent />
+        </RootProvider>
+      </body>
     </html>
   )
 }

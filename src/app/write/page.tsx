@@ -1,11 +1,10 @@
 import EditorComponent from "./component/editor";
+import WriteButton from "./component/write.button";
 
 const WritePage = () => {
     return (
-        <div>
-            <button>
-                발행하기
-            </button>
+        <div style={{padding:'10px'}}>
+            <WriteButton/>            
             <EditorComponent/>
         </div>
     )

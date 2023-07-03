@@ -1,12 +1,28 @@
-import { InjectedConnector } from "@wagmi/core";
+"use client";
+
 import Link from "next/link";
-import { useAccount, useConnect } from "wagmi";
+import { useEffect, useState } from "react";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { Profile } from "./profile";
+import HoverLink from "./utils/hover.link";
 
 const WalletComponent = () => {
-  const { isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector : new InjectedConnector()
-})
+  const { address, isConnected } = useAccount();
+
+  const { disconnect } = useDisconnect();
+
+  const [isOpened, setOpened] = useState(false);
+
+  const handleConnect = () => {
+    setOpened(true);
+  };
+
+  useEffect(() => {
+    if (isConnected) {
+      setOpened(false);
+    }
+  }, [isConnected])
+
   return (
     <>
       {isConnected ? (
@@ -19,9 +35,45 @@ const WalletComponent = () => {
             gap: "10px",
           }}
         >
-          <Link style={{ width: '30px', border: 'solid', borderRadius: '4px', borderColor: 'orange', padding: '2px' }} href={"/account"}>
+          <HoverLink style={{
+            position: 'relative',
+            width: '30px',
+            border: 'solid',
+            borderRadius: '4px',
+            borderColor: 'orange',
+            padding: '2px'
+          }}
+            hoverEvent={() => {
+              console.log('hover')
+            }}
+            href={"/"}
+            hoverChildren={
+              <div style={{
+                position: 'absolute', width: '200px', height: '450px', 'top': '0px', 'right': '0px', 'background': 'transparent', paddingTop: '50px'
+              }}>
+                <li style={{
+                  background: 'white',
+                  borderRadius: '12px',
+                  padding: '10px',
+                  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                  listStyle: 'none'
+                }}>
+                  <ul style={{ margin: 0, padding: 0 }}>
+                    <li style={{
+                      padding: '5px 0',
+                      
+                    }}><Link href={"/account"}>계정 정보</Link></li>
+                    <li style={{
+                      padding: '5px 0',
+                    }}
+                    onClick={() => disconnect()}
+                    >로그 아웃</li>
+                  </ul>
+                </li>
+              </div>
+            }>
             <img src="account.svg" />
-          </Link>
+          </HoverLink>
           <Link style={{ width: '30px', border: 'solid', borderRadius: '4px', borderColor: 'orange', padding: '2px' }} href={"/write"}>
             <img src="write.svg" />
           </Link>
@@ -37,11 +89,13 @@ const WalletComponent = () => {
             color: "orange",
             fontWeight: "bold",
           }}
-          onClick={() => connect()}
+          onClick={() => handleConnect()}
         >
           Connect Wallet
         </button>
+
       )}
+      {isOpened ? <Profile /> : <></>}
     </>
   );
 };

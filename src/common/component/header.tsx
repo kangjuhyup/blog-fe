@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { WagmiConfig } from "wagmi";
-import { wagmi_config } from "../config/wagmi";
 import { HEADER_HEIGHT } from "../const";
 import WalletComponent from "./wallet";
 const HeaderComponent = (props: { title: string }) => {
   return (
-    <WagmiConfig config={wagmi_config}>
+    
       <div
         style={{
           position: "fixed",
@@ -19,6 +17,7 @@ const HeaderComponent = (props: { title: string }) => {
           alignItems: "center",
           gap: "10px",
         }}
+        
       >
         <Link
           style={{
@@ -43,7 +42,6 @@ const HeaderComponent = (props: { title: string }) => {
         </Link>
         <WalletComponent />
       </div>
-    </WagmiConfig>
   );
 };
 export default HeaderComponent;
