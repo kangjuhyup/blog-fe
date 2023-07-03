@@ -32,7 +32,10 @@ const HoverLink = (props: {
       style={props.style}
     >
       {props.children}      
-      {isHovered && props.hoverChildren}
+      {
+      isHovered && 
+      props.hoverChildren
+      }
     </Link>
   );
 };

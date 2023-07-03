@@ -1,8 +1,12 @@
+import Profile from "./component/profile";
+import SelectList from "./component/select.list";
+
 const AccountPage = () => {
     return (
-        <div>
-            
-        </div>
+        <>
+            <Profile/>
+            <SelectList/>
+        </>
     )
 }
 

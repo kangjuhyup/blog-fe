@@ -16,6 +16,7 @@ const HeaderComponent = (props: { title: string }) => {
           flexDirection: "row",
           alignItems: "center",
           gap: "10px",
+          zIndex:'999999'
         }}
         
       >

@@ -1,7 +1,7 @@
 const WriteButton = () => {
     return (
-        <button style={{width:'100vw',height:'50px',borderRadius:'8px',background:'orange'}}>
-            발행하기
+        <button style={{position:'fixed', bottom:'150px', right:'50px', width:'50px',height:'50px',borderRadius:'50%',background:'orange', zIndex:'999999'}}>
+            +
         </button>
     )
 }

@@ -41,7 +41,7 @@ const WalletComponent = () => {
             border: 'solid',
             borderRadius: '4px',
             borderColor: 'orange',
-            padding: '2px'
+            padding: '2px',
           }}
             hoverEvent={() => {
               console.log('hover')
@@ -49,14 +49,14 @@ const WalletComponent = () => {
             href={"/"}
             hoverChildren={
               <div style={{
-                position: 'absolute', width: '200px', height: '450px', 'top': '0px', 'right': '0px', 'background': 'transparent', paddingTop: '50px'
+                position: 'absolute', width: '200px', height: '450px', top: '0px', right: '0px', background: 'transparent', paddingTop: '50px'
               }}>
                 <li style={{
                   background: 'white',
                   borderRadius: '12px',
                   padding: '10px',
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-                  listStyle: 'none'
+                  listStyle: 'none',
                 }}>
                   <ul style={{ margin: 0, padding: 0 }}>
                     <li style={{
