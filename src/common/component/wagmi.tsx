@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { WagmiConfig, createStorage } from 'wagmi';
 import { wagmi_config } from '../config/wagmi';
 

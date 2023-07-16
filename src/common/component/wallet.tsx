@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Profile } from "./profile";
-import HoverLink from "./utils/hover.link";
+import HoverLink from "./hover.link";
+import { useSignIn } from "../hooks/wallet/signIn";
 
 const WalletComponent = () => {
-  const { address, isConnected } = useAccount();
-
+  const { isConnected } = useAccount();
+  const { signIn, isError, isSuccess, isLoading, isPrepare } = useSignIn();
   const { disconnect } = useDisconnect();
 
   const [isOpened, setOpened] = useState(false);
@@ -18,10 +19,15 @@ const WalletComponent = () => {
   };
 
   useEffect(() => {
-    if (isConnected) {
+    disconnect();
+  },[isError])
+
+  useEffect(() => {
+    if (isConnected && isPrepare && !isSuccess ) {
       setOpened(false);
+      signIn();
     }
-  }, [isConnected])
+  }, [isConnected, isPrepare])
 
   return (
     <>
@@ -57,6 +63,7 @@ const WalletComponent = () => {
                   padding: '10px',
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
                   listStyle: 'none',
+                  color : 'black'
                 }}>
                   <ul style={{ margin: 0, padding: 0 }}>
                     <li style={{

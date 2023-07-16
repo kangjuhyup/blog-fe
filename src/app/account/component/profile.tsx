@@ -2,9 +2,17 @@
 
 import { useAccount } from "wagmi";
 import Avatar from "boring-avatars";
+import { useGetInfo } from "@/common/hooks/profile/getInfo";
+import { useEffect } from "react";
 
 const Profile = () => {
     const { address } = useAccount();
+    const { user, getInfo } = useGetInfo();
+
+    useEffect(() => {
+        getInfo();
+    },[])
+
     return (
         <div style={{ width: '100%', height: '600px', position: 'relative', background: 'transparent' }}>
             <div style={{width: '100%', height: '470px', position: 'relative', background: 'red'}}>
