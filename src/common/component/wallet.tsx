@@ -6,24 +6,27 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Profile } from "./profile";
 import HoverLink from "./hover.link";
 import { useSignIn } from "../hooks/wallet/signIn";
+import Cookies from "js-cookie";
 
 const WalletComponent = () => {
   const { isConnected } = useAccount();
-  const { signIn, isError, isSuccess, isLoading, isPrepare } = useSignIn();
-  const { disconnect } = useDisconnect();
+  const { signIn,fetchNonce,handleDisconnect, isError, isSuccess, isLoading, isPrepare } = useSignIn();
+  
 
   const [isOpened, setOpened] = useState(false);
 
   const handleConnect = () => {
+    fetchNonce();
     setOpened(true);
   };
 
+
   useEffect(() => {
-    disconnect();
+    handleDisconnect();    
   },[isError])
 
   useEffect(() => {
-    if (isConnected && isPrepare && !isSuccess ) {
+    if (isConnected && !isSuccess ) {      
       setOpened(false);
       signIn();
     }
@@ -31,7 +34,7 @@ const WalletComponent = () => {
 
   return (
     <>
-      {isConnected ? (
+      {isSuccess ? (
         <div
           style={{
             position: "absolute",
@@ -73,7 +76,7 @@ const WalletComponent = () => {
                     <li style={{
                       padding: '5px 0',
                     }}
-                    onClick={() => disconnect()}
+                    onClick={() => handleDisconnect()}
                     >로그 아웃</li>
                   </ul>
                 </li>

@@ -1,9 +1,8 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useAccount, useNetwork, useSignMessage } from "wagmi";
-import { SiweMessage } from "siwe";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 
 export const useGetInfo = () => {
   const { address } = useAccount();
@@ -17,19 +16,10 @@ export const useGetInfo = () => {
     error? : boolean;
   }>({});
 
-
-
-
-
   const getInfo = async () => {
     console.log('[getInfo]')
-    if (!address) {
-      return;
-    }
-
+    if (!address) return;
     setState((x) => ({ ...x, loading: true }));
-
-
     await axios
       .get(`http://localhost:8000/api/user/info?address=${address}`, {
       })

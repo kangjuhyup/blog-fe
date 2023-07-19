@@ -1,59 +1,74 @@
 "use client";
 
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
+import 'react-quill/dist/quill.snow.css';
 import dynamic from "next/dynamic";
-import { useEffect, useState, useRef } from "react";
-import rehypeSanitize from "rehype-sanitize";
+import { useEffect, useState } from "react";
+import WriteButton from './write.button';
+import EditorController from './controller/editor.controller';
+import TransactionDialog from '@/common/component/tx.dialog';
 
 
-const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+const QuillWrapper = dynamic(() => import("react-quill"), {
+   ssr: false ,
+   loading : () => <p>Loading...</p>
+  });
 
+
+const modules = {
+  toolbar: [
+    [{ header: '1' }, { header: '2' }, { font: [] }],
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [
+      { list: 'ordered' },
+      { list: 'bullet' },
+      { indent: '-1' },
+      { indent: '+1' },
+    ],
+    ['link', 'image', 'video'],
+    ['clean'],
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
+}
+/*
+ * Quill editor formats
+ * See https://quilljs.com/docs/formats/
+ */
+const formats = [
+  'header',
+  'font',
+  'size',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'image',
+  'video',
+]
 
 const EditorComponent = () => {
-  const [value, setValue] = useState<string | undefined>("**Hello world**");
-  const [editorHeight, setEditorHeight] = useState<number>(0);
-
-  const handleChange = (newValue: string | undefined) => {
-    setValue(newValue);
-  };
+  
+  const { handleClick, handleChange,hash } = EditorController();
 
   useEffect(() => {
-    const updateEditorHeight = () => {
-        const editorOffsetTop = document.getElementById("editor")?.offsetTop || 100;
-        const editorOffsetBottom = document.getElementById("footer")?.offsetTop || 0;
-        const editorHeight = editorOffsetBottom - 20 - editorOffsetTop ;
-        setEditorHeight(editorHeight);
-    };
+    if(!hash) return;
 
-    updateEditorHeight();
-    window.addEventListener("resize", updateEditorHeight);
-
-    return () => {
-      window.removeEventListener("resize", updateEditorHeight);
-    };
-  }, []);
-
-
+  },[hash])
+  
   return (
-    <>
-      {
-        MDEditor ?
-          <MDEditor
-          id="editor"
-            value={value}
-            onChange={handleChange}
-            previewOptions={{
-              rehypePlugins: [[rehypeSanitize]],
-            }}
-            height={editorHeight}
-          />
-          :
-          <div>Loading...</div>
-      }
-    </>
-
-
+    <div style={{height:'100%'}}>  
+      <QuillWrapper style={{height:'100%', background:'white'}} modules={modules} formats={formats} theme='snow' onChange={(content, delta, source, editor) => handleChange(editor.getHTML())}/>
+      <WriteButton clickHandler={handleClick}/>
+      <TransactionDialog isVisible={hash!==undefined} hash={hash}/>
+    </div>
   );
 };
 
