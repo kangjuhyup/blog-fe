@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import WriteButton from './write.button';
 import EditorController from './controller/editor.controller';
 import TransactionDialog from '@/common/component/tx.dialog';
+import { useWrite } from '@/common/hooks/article/write';
+import { useUpload } from '@/common/hooks/ipfs/upload';
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 
 
 const QuillWrapper = dynamic(() => import("react-quill"), {
@@ -56,18 +59,79 @@ const formats = [
 
 const EditorComponent = () => {
   
-  const { handleClick, handleChange,hash } = EditorController();
+  const { mint } = useWrite();
+  const { upload } = useUpload();
+  const [value, setValue] = useState<string | undefined>();
+  const [hash,setHash] = useState<`0x${string}`|undefined>();
+  const [cids,setCids] = useState<string|undefined>()
+
+  const { address } = useAccount();
+  const { config, error: prepareError, isError: isPrepareError, isSuccess:prepareSuccess } = usePrepareContractWrite({
+    address: '0x476059cD57800DB8eB88f67c2Aa38A6fCf8251e0',
+    abi: [
+        {
+            "inputs": [
+                {
+                    internalType: "address",
+                    name: "to",
+                    type: "address"
+                },
+                {
+                    internalType: "string",
+                    name: "uri",
+                    type: "string"
+                }
+            ],
+            name: "safeMint",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function"
+        },
+    ],
+    functionName: 'safeMint',
+    args: [address!, cids?cids:''],
+    enabled: Boolean(cids),
+})
+const { data, write } = useContractWrite(config);
+const { isLoading:txLoading, isSuccess:txSuccess } = useWaitForTransaction({
+  hash : data?.hash
+})
+
+  const handleChange = (newValue: string | undefined) => {
+      setValue(newValue);
+  }
+
+  const handleClick = async () => {        
+      if (!value) return;
+      console.log('[handleClick]');
+      setCids((await upload(value)).toString());            
+  }
 
   useEffect(() => {
     if(!hash) return;
 
   },[hash])
+
+  useEffect(() => { 
+    if(prepareSuccess){
+      write?.();
+    } 
+  },[prepareSuccess])
+
+  useEffect(() => {
+    if(txLoading) {
+      console.log('tx Loading ...')
+    }
+    if(txSuccess) {
+      console.log('tx Success!')
+    }
+  },[txLoading,txSuccess])
   
   return (
     <div style={{height:'100%'}}>  
       <QuillWrapper style={{height:'100%', background:'white'}} modules={modules} formats={formats} theme='snow' onChange={(content, delta, source, editor) => handleChange(editor.getHTML())}/>
       <WriteButton clickHandler={handleClick}/>
-      <TransactionDialog isVisible={hash!==undefined} hash={hash}/>
+      <TransactionDialog isVisible={txLoading} hash={data?.hash}/>
     </div>
   );
 };

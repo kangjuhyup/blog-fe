@@ -6,41 +6,50 @@ export const useWrite = () => {
     const { address } = useAccount();
     const [state, setState] = useState<{
         loading?: boolean;
-        success? : boolean;
-        error? : boolean;
-      }>({});
+        success?: boolean;
+        error?: boolean;
+    }>({});
 
-    const write = async (cids:string, hash:string) => {
-        setState((x) => ({...x,loading:true}))
+    const write = async (cids: string, hash: string) => {
+        setState((x) => ({ ...x, loading: true }))
         await axios
-        .post(`http://localhost:8000/api/article/write`, {
-            address,
-            cids,
-        })
+            .post(`http://localhost:8000/api/article/write`, {
+                address,
+                cids,
+            })
     }
 
-    const mint = async (cids:string) => {
-        setState((x) => ({...x,loading:true}))
-        const { config , error:prepareError, isError : isPrepareError } = usePrepareContractWrite({
-            address : '0x...',
-            abi : [
+    const mint = async (cids: string) => {
+        setState((x) => ({ ...x, loading: true }))
+        const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
+            address: '0x476059cD57800DB8eB88f67c2Aa38A6fCf8251e0',
+            abi: [
                 {
-                    name :'mint',
-                    type :'function',
-                    stateMutability: 'nonpayable',
-                    inputs: [
-                        { internalType : 'string', name: 'cids', type: 'string'}
+                    "inputs": [
+                        {
+                            internalType: "address",
+                            name: "to",
+                            type: "address"
+                        },
+                        {
+                            internalType: "string",
+                            name: "uri",
+                            type: "string"
+                        }
                     ],
+                    name: "safeMint",
                     outputs: [],
-                }
+                    stateMutability: "nonpayable",
+                    type: "function"
+                },
             ],
-            functionName: 'mint',
-            args : [cids],
-            enabled : Boolean(cids),            
+            functionName: 'safeMint',
+            args: [address!, cids],
+            enabled: Boolean(cids),
         })
-        
-        if(isPrepareError) {
-            setState((x) => ({...x,loading:false}))
+
+        if (isPrepareError) {
+            setState((x) => ({ ...x, loading: false }))
             throw prepareError;
         }
         const { data, write } = useContractWrite(config);
@@ -48,14 +57,10 @@ export const useWrite = () => {
         return data?.hash;
     }
 
-    const wait = (hash:`0x${string}`) => useWaitForTransaction({
-        hash: hash
-    })
 
 
     return {
         mint,
-        wait,
         write
     }
 }
