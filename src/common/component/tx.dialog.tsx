@@ -18,7 +18,7 @@ const TransactionDialog = ({ isVisible, hash }: props) => {
                         <div style={{ width: '400px', height: '400px', position: 'fixed', top: '50%', 'left': '50%' }} >
                             {
                                 isLoading ?
-                                    <p>Loading...</p>
+                                    <p>{hash} Loading...</p>
                                     : <></>
                             }
                             {

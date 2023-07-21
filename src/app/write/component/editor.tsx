@@ -4,7 +4,6 @@ import 'react-quill/dist/quill.snow.css';
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import WriteButton from './write.button';
-import EditorController from './controller/editor.controller';
 import TransactionDialog from '@/common/component/tx.dialog';
 import { useWrite } from '@/common/hooks/article/write';
 import { useUpload } from '@/common/hooks/ipfs/upload';
